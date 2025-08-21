@@ -141,6 +141,7 @@ func (dec *Decoder) Decode(v interface{}) (err error) {
 // conversion of YAML into a Go value.
 func (n *Node) Decode(v interface{}) (err error) {
 	d := newDecoder()
+	d.knownFields = n.KnownFields
 	defer handleErr(&err)
 	out := reflect.ValueOf(v)
 	if out.Kind() == reflect.Ptr && !out.IsNil() {
@@ -413,6 +414,9 @@ type Node struct {
 	// These fields are not respected when encoding the node.
 	Line   int
 	Column int
+
+	// For passing into a child decoder from a custom unmarshall.
+	KnownFields bool
 }
 
 // IsZero returns whether the node has all of its fields unset.
